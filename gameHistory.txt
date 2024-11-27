@@ -1,0 +1,18 @@
+//Game Log File
+
+{
+    Game No : 1;
+    Player 1 : Darshan Patel
+    Player 2 : Mr. Quantum
+
+    Moves
+    {
+
+    }
+
+    Result
+    {
+        Mr.Quantum Won;
+        //or Draw
+    }
+}

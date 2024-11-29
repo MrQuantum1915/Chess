@@ -2,7 +2,7 @@ left to do{
 1. mark everytime when enpassant move (pawn directly moves to 2 jumps) so that while checking we can  
 }
 
-
+try reprinting the board after clearing terminal, may bbe easy and bug free
 
 1. Add user made header files
 2. Rating

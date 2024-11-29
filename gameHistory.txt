@@ -7,7 +7,7 @@
 
     Moves
     {
-
+        a2 a4
     }
 
     Result
@@ -16,3 +16,4 @@
         //or Draw
     }
 }
+

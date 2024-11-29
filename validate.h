@@ -19,6 +19,10 @@
 
 int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int, int possibleEnpassant)
 {
+if (matrix[8-InitialRow][InitialColumn_int]==' ')
+{
+    return 0;
+}
 
     if (whoseMove == white)
     {
@@ -34,6 +38,9 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 if (FinalRow == 3 || FinalRow == 4)
                 {
                     return 1;
+                }
+                else{
+                    return 0;
                 }
             }
 
@@ -140,15 +147,93 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
         else if (piece == whiteRook)
         {
-            if (1)
+            if (InitialRow == FinalRow || InitialColumn_int == FinalColumn_int)
             {
-                return 1;
+                int direction = 0;
+
+                   // 1
+                // 4     3
+                 //   2
+                if (FinalRow > InitialRow)
+                {
+                    direction = 1;
+                }
+                else if (FinalRow < InitialRow)
+                {
+                    direction = 2;
+                }
+                else if (FinalColumn_int > InitialColumn_int)
+                {
+                    direction = 3;
+                }
+                else if (FinalColumn_int < InitialColumn_int)
+                {
+                    direction = 4;
+                }
+
+                int obstacleFlag = 1;
+
+                // check for obstacles in the path
+                if (direction == 1)
+                {
+                    for (int i = InitialRow + 1; i < FinalRow; i++)
+                    {
+                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        {
+                            obstacleFlag = 0;
+                            break;
+                        }
+                    }
+                }
+                else if (direction == 2)
+                {
+                    for (int i = InitialRow - 1; i > FinalRow; i--)
+                    {
+                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        {
+                            obstacleFlag = 0;
+                            break;
+                        }
+                    }
+                }
+                else if (direction == 3)
+                {
+                    for (int i = InitialColumn_int + 1; i < FinalColumn_int; i++)
+                    {
+                        if (matrix[8 - InitialRow][i] != ' ')
+                        {
+                            obstacleFlag = 0;
+                            break;
+                        }
+                    }
+                }
+                else if (direction == 4)
+                {
+                    for (int i = InitialColumn_int - 1; i > FinalColumn_int; i--)
+                    {
+                        if (matrix[8 - InitialRow][i] != ' ')
+                        {
+                            obstacleFlag = 0;
+                            break;
+                        }
+                    }
+                }
+
+                if (obstacleFlag==1)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {
                 return 0;
             }
         }
+
         else if (piece == whiteKnight)
         {
             if (1)

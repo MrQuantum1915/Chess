@@ -1,9 +1,0 @@
-void checkmate()
-{
-    
-}
-
-void pieceMoves()
-{
-    
-}

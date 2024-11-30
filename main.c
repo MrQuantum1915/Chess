@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "validate.h"
+#include "check.h"
 
 // Made by Mr.Quantum (Darshan Patel)
 
@@ -30,10 +31,11 @@ void Instructions();
 void fillCanvas(char matrix[8][8]);
 void printCanvas(char matrix[8][8]);
 int mapCharToInt(char Column);
-void simulateMove(char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int);
+//void simulateMove(char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int);
 
 int main()
 {
+    int check=0;
 
     Instructions();
     printf("Enter name of Player 1 : ");
@@ -132,7 +134,7 @@ int main()
     }
 
     printf("\nPress any key to exit...");
-    getchar(); // added this If the user wanna runs this in windows terminal instead, than user has a time to see the result
+    getchar(); // added this If the user wanna runs this in windows cmd instead of standard terminal, than user has a time to see the result
     return 0;
 }
 
@@ -230,29 +232,29 @@ int mapCharToInt(char Column)
     }
 }
 
-void simulateMove(char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int) // configuring this to board required so many frustrating try runs and adjusting the values
-{
-    printf("\033[%d;%dH", (7 + 8 - InitialRow), ((InitialColumn_int - 1) * 3) + 30); // moving the cursor to the peice which is to be moved
-    if ((InitialRow % 2 == 0 && InitialColumn_int % 2 != 0) || (InitialRow % 2 != 0 && InitialColumn_int % 2 == 0))
-    {
-        printf("\033[48;5;255m \033[0m"); // print space at thes position to simulate disappearance
-    }
-    else
-    {
-        printf("\033[48;5;236m \033[0m");
-    }
-    printf("\033[%d;%dH", (7 + 8 - FinalRow), ((FinalColumn_int - 1) * 3 + 29));
-    if ((FinalRow % 2 == 0 && FinalColumn_int % 2 != 0) || (FinalRow % 2 != 0 && FinalColumn_int % 2 == 0))
-    {
-        printf("\033[1;90m\033[48;5;255m %c \033[0m", piece);
-    }
-    else
-    {
-        printf("\033[1;97m\033[48;5;236m %c \033[0m", piece);
-    }
+// void simulateMove(char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int) // configuring this to board required so many frustrating try runs and adjusting the values
+// {
+//     printf("\033[%d;%dH", (7 + 8 - InitialRow), ((InitialColumn_int - 1) * 3) + 30); // moving the cursor to the peice which is to be moved
+//     if ((InitialRow % 2 == 0 && InitialColumn_int % 2 != 0) || (InitialRow % 2 != 0 && InitialColumn_int % 2 == 0))
+//     {
+//         printf("\033[48;5;255m \033[0m"); // print space at thes position to simulate disappearance
+//     }
+//     else
+//     {
+//         printf("\033[48;5;236m \033[0m");
+//     }
+//     printf("\033[%d;%dH", (7 + 8 - FinalRow), ((FinalColumn_int - 1) * 3 + 29));
+//     if ((FinalRow % 2 == 0 && FinalColumn_int % 2 != 0) || (FinalRow % 2 != 0 && FinalColumn_int % 2 == 0))
+//     {
+//         printf("\033[1;90m\033[48;5;255m %c \033[0m", piece);
+//     }
+//     else
+//     {
+//         printf("\033[1;97m\033[48;5;236m %c \033[0m", piece);
+//     }
 
-    printf("\033[25;0H"); // these resets the cursor position to15,0 to avoid other overwrite for next instructions.
-}
+//     printf("\033[25;0H"); // these resets the cursor position to15,0 to avoid other overwrite for next instructions.
+// }
 
 // fflsuh(stdout);
 /* I had to apply this function because there were some problems  coming randomly when shifting the piece (like printing new at somewhere else). This function pushes the items in buffer to the terminal forcing to print anything in buffer that's waiting for either of (newline,buffer full, end of program). These clears any buffer Essential to be used especially in ANSI escapse commands*/

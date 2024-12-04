@@ -1,4 +1,5 @@
 // header file to check the validity of the move
+#include <stdio.h>
 #include <stdlib.h>
 #include "check.h"
 #define blackKing 'k'
@@ -14,27 +15,31 @@
 #define whiteBishop 'B'
 #define whiteKnight 'N'
 #define whiteRook 'R'
-
+#define yes 1
+#define no 0
 #define white 1 // here i am maping int to defining whose move
 #define black 2
 
-int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int, int possibleEnpassant)
+int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int InitialColumn_int, int FinalRow, int FinalColumn_int, int possibleEnpassant, int *check)
 {
-    if (matrix[8 - InitialRow][InitialColumn_int] == ' ')
+    if (matrix[8 - InitialRow][InitialColumn_int - 1] == ' ')
     {
-        return 0;
+        printf("Error400");
+        return no;
     }
 
     else if (whoseMove == white)
     {
         if (piece != whiteKing && piece != whitePawn && piece != whiteBishop && piece != whiteRook && piece != whiteKnight && piece != whiteQueen)
         {
-            return 0;
+            printf("Error401");
+            return no;
         }
 
         else if (FinalRow > 8 || FinalRow < 1 || FinalColumn_int > 8 || FinalColumn_int < 1)
         {
-            return 0;
+            printf("Error402");
+            return no;
         }
 
         else if (piece == whitePawn)
@@ -43,44 +48,46 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
             {
                 if (FinalRow == 3 || FinalRow == 4)
                 {
-                    return 1;
+                    return yes;
                 }
                 else
                 {
-                    return 0;
+                    printf("Error403");
+                    return no;
                 }
             }
 
             else if (((((InitialColumn_int + 1) < 8) && (FinalColumn_int == (InitialColumn_int + 1)) && (matrix[8 - InitialRow][InitialColumn_int + 1] == blackPawn)) || (((InitialColumn_int - 1) > 0) && (FinalColumn_int == (InitialColumn_int - 1)) && (matrix[8 - InitialRow][InitialColumn_int - 1] == blackPawn))) && (possibleEnpassant == 1)) // Enpassant
             {
-                return 1;
+                return yes;
             }
 
             else if (
                 ((FinalColumn_int == (InitialColumn_int + 1)) &&
                      ((InitialColumn_int + 1) < 8) ||
                  (FinalColumn_int == (InitialColumn_int - 1)) &&
-                     ((InitialColumn_int - 1) > 0) &&
+                     ((InitialColumn_int - 1) >= 0) &&
                      (FinalRow == (InitialRow + 1))) &&
 
-                (matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackKing)) // capture piece
+                (matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackPawn ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackBishop ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackRook ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackKnight ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackQueen ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1 - 1] == blackKing)) // capture piece
             {
-                return 1;
+                return yes;
             }
 
-            else if ((FinalRow == (InitialRow + 1)) && (matrix[InitialRow + 1][InitialColumn_int] == ' ')) // simple move
+            else if ((FinalRow == (InitialRow + 1)) && (matrix[InitialRow + 1][InitialColumn_int - 1] == ' ')) // simple move
             {
-                return 1;
+                return yes;
             }
 
             else
             {
-                return 0;
+                printf("Error404");
+                return no;
             }
         }
 
@@ -91,7 +98,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             if (rowDiff != columnDiff)
             {
-                return 0;
+                return no;
             }
 
             int direction = 0;
@@ -154,20 +161,21 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 }
             }
 
-            if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int] == blackKing))
+            if ((rowDiff == columnDiff) && (obstacleFlag == 1) &&
+                (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
             {
-                return 1;
+                return yes;
             }
             else
             {
-                return 0;
+                printf("Error405");
+                return no;
             }
         }
 
@@ -201,7 +209,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 {
                     for (int i = InitialRow + 1; i < FinalRow; i++)
                     {
-                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                         {
                             obstacleFlag = 0;
                             break;
@@ -211,9 +219,9 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                 else if (direction == 2)
                 {
-                    for (int i = InitialRow - 1; i > FinalRow; i--)
+                    for (int i = (InitialRow - 1); i > FinalRow; i--)
                     {
-                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                         {
                             obstacleFlag = 0;
                             break;
@@ -245,24 +253,27 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                 if ((obstacleFlag == 1) &&
 
-                    (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                     matrix[8 - FinalRow][FinalColumn_int] == blackKing))
+                    (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
                 {
-                    return 1;
+                    return yes;
                 }
+
                 else
                 {
-                    return 0;
+                    printf("Error406");
+                    return no;
                 }
             }
             else
             {
-                return 0;
+                printf("Error407");
+                return no;
             }
         }
 
@@ -274,19 +285,23 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
             // check for the L shape move
             if ((rowDiff == 2 && columnDiff == 1) || (rowDiff == 1 && columnDiff == 2))
             {
-                if (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                    matrix[8 - FinalRow][FinalColumn_int] == blackKing)
+                if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing)
                 {
-                    return 1;
+                    return yes;
                 }
             }
 
-            return 0;
+            else
+            {
+                printf("Error408");
+                return no;
+            }
         }
 
         else if (piece == whiteQueen)
@@ -325,7 +340,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     {
                         for (int i = InitialRow + 1; i < FinalRow; i++)
                         {
-                            if (matrix[8 - i][InitialColumn_int] != ' ')
+                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                             {
                                 obstacleFlag = 0;
                                 break;
@@ -337,7 +352,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     {
                         for (int i = InitialRow - 1; i > FinalRow; i--)
                         {
-                            if (matrix[8 - i][InitialColumn_int] != ' ')
+                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                             {
                                 obstacleFlag = 0;
                                 break;
@@ -369,19 +384,20 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                     if ((obstacleFlag == 1) &&
 
-                        (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackKing))
+                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
                     {
-                        return 1;
+                        return yes;
                     }
                     else
                     {
-                        return 0;
+                        printf("Error409");
+                        return no;
                     }
                 }
                 // bishop
@@ -448,26 +464,29 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     }
 
                     if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                        (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackPawn ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackRook ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int] == blackKing))
+                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
                     {
-                        return 1;
+                        return yes;
                     }
                     else
                     {
-                        return 0;
+                        printf("Error410");
+                        return no;
                     }
                 }
             }
 
             else
             {
-                return 0;
+                printf("Error411");
+
+                return no;
             }
         }
 
@@ -475,11 +494,13 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
         {
             if (1)
             {
-                return 1;
+                return yes;
             }
             else
             {
-                return 0;
+                printf("Error412");
+
+                return no;
             }
         }
     }
@@ -488,30 +509,34 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
     {
         if (piece != blackKing && piece != blackPawn && piece != blackBishop && piece != blackRook && piece != blackKnight && piece != blackQueen)
         {
-            return 0;
+            printf("Error413");
+            return no;
         }
 
         else if (FinalRow > 8 || FinalRow < 1 || FinalColumn_int > 8 || FinalColumn_int < 1)
         {
-            return 0;
+            printf("Error414");
+
+            return no;
         }
         else if (piece == blackPawn)
         {
-            if (InitialRow == 2)
+            if (InitialRow == 7)
             {
-                if (FinalRow == 3 || FinalRow == 4)
+                if ((FinalRow == 6 || FinalRow == 5))
                 {
-                    return 1;
+                    return yes;
                 }
                 else
                 {
-                    return 0;
+                    printf("Error415");
+                    return no;
                 }
             }
 
             else if (((((InitialColumn_int + 1) < 8) && (FinalColumn_int == (InitialColumn_int + 1)) && (matrix[8 - InitialRow][InitialColumn_int + 1] == blackPawn)) || (((InitialColumn_int - 1) > 0) && (FinalColumn_int == (InitialColumn_int - 1)) && (matrix[8 - InitialRow][InitialColumn_int - 1] == blackPawn))) && (possibleEnpassant == 1)) // Enpassant
             {
-                return 1;
+                return yes;
             }
 
             else if (
@@ -521,24 +546,25 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                      ((InitialColumn_int - 1) > 0) &&
                      (FinalRow == (InitialRow + 1))) &&
 
-                (matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteKing)) // capture piece
+                (matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)) // capture piece
             {
-                return 1;
+                return yes;
             }
 
-            else if ((FinalRow == (InitialRow + 1)) && (matrix[InitialRow + 1][InitialColumn_int] == ' ')) // simple move
+            else if ((FinalRow == (InitialRow + 1)) && (matrix[InitialRow + 1][InitialColumn_int - 1] == ' ')) // simple move
             {
-                return 1;
+                return yes;
             }
 
             else
             {
-                return 0;
+                printf("Error416");
+                return no;
             }
         }
 
@@ -549,7 +575,8 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             if (rowDiff != columnDiff)
             {
-                return 0;
+                printf("Error417");
+                return no;
             }
 
             int direction = 0;
@@ -613,19 +640,20 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
             }
 
             if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int] == whiteKing))
+                (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
             {
-                return 1;
+                return yes;
             }
             else
             {
-                return 0;
+                printf("Error418");
+                return no;
             }
         }
 
@@ -659,7 +687,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 {
                     for (int i = InitialRow + 1; i < FinalRow; i++)
                     {
-                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                         {
                             obstacleFlag = 0;
                             break;
@@ -669,9 +697,9 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                 else if (direction == 2)
                 {
-                    for (int i = InitialRow - 1; i > FinalRow; i--)
+                    for (int i = (InitialRow - 1); i > FinalRow; i--)
                     {
-                        if (matrix[8 - i][InitialColumn_int] != ' ')
+                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                         {
                             obstacleFlag = 0;
                             break;
@@ -703,24 +731,26 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                 if ((obstacleFlag == 1) &&
 
-                    (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                     matrix[8 - FinalRow][FinalColumn_int] == whiteKing))
+                    (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
                 {
-                    return 1;
+                    return yes;
                 }
                 else
                 {
-                    return 0;
+                    printf("Error419");
+                    return no;
                 }
             }
             else
             {
-                return 0;
+                printf("Error420");
+                return no;
             }
         }
 
@@ -732,19 +762,22 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
             // check for the L shape move
             if ((rowDiff == 2 && columnDiff == 1) || (rowDiff == 1 && columnDiff == 2))
             {
-                if (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                    matrix[8 - FinalRow][FinalColumn_int] == whiteKing)
+                if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)
                 {
-                    return 1;
+                    return yes;
                 }
             }
-
-            return 0;
+            else
+            {
+                printf("Error421");
+                return no;
+            }
         }
 
         else if (piece == blackQueen)
@@ -783,7 +816,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     {
                         for (int i = InitialRow + 1; i < FinalRow; i++)
                         {
-                            if (matrix[8 - i][InitialColumn_int] != ' ')
+                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                             {
                                 obstacleFlag = 0;
                                 break;
@@ -795,7 +828,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     {
                         for (int i = InitialRow - 1; i > FinalRow; i--)
                         {
-                            if (matrix[8 - i][InitialColumn_int] != ' ')
+                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
                             {
                                 obstacleFlag = 0;
                                 break;
@@ -827,19 +860,20 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
                     if ((obstacleFlag == 1) &&
 
-                        (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteKing))
+                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
                     {
-                        return 1;
+                        return yes;
                     }
                     else
                     {
-                        return 0;
+                        printf("Error422");
+                        return no;
                     }
                 }
                 // bishop
@@ -906,26 +940,28 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                     }
 
                     if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                        (matrix[8 - FinalRow][FinalColumn_int] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whitePawn ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteRook ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int] == whiteKing))
+                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
                     {
-                        return 1;
+                        return yes;
                     }
                     else
                     {
-                        return 0;
+                        printf("Error423");
+                        return no;
                     }
                 }
             }
 
             else
             {
-                return 0;
+                printf("Error424");
+                return no;
             }
         }
 
@@ -934,11 +970,12 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
         {
             if (1)
             {
-                return 1;
+                return yes;
             }
             else
             {
-                return 0;
+
+                return no;
             }
         }
     }

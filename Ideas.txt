@@ -1,10 +1,9 @@
 left to do{
 1. mark everytime when enpassant move (pawn directly moves to 2 jumps) so that while checking we can  
 2. build the check file to restrict the movement when the king is in check
-
+3. first king move? then possible castling.
 }
 
-
-1. Add user made header files
-2. Rating
-3. 
+extra ideas
+1. Rating
+2. 

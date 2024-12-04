@@ -1,0 +1,20 @@
+#define blackKingUnicode L'\u265A'
+#define blackQueenUnicode L'\u265B'
+#define blackPawnUnicode L'\u265F'
+#define blackBishopUnicode L'\u265D'
+#define blackKnightUnicode L'\u265E'
+#define blackRookUnicode L'\u265C'
+
+#define whiteKingUnicode L'\u2654'
+#define whiteQueenUnicode L'\u2655'
+#define whitePawnUnicode L'\u2659'
+#define whiteBishopUnicode L'\u2657'
+#define whiteKnightUnicode L'\u2658'
+#define whiteRookUnicode L'\u2656'
+
+
+a2 a4
+c7 c6
+a4 a5
+b7 b6
+a5 b6

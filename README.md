@@ -1,6 +1,7 @@
 # Chess
  A Command Line, console based Chess game completely build in C Language. (Under Development)
  Whole code is commented where needed.
+ Main File is "**main.c**".
  
 Flowchart of code : https://miro.com/app/board/uXjVL7OZ6BQ=/?share_link_id=313781785368
 

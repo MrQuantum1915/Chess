@@ -1,8 +1,23 @@
 #include <stdio.h>
+// Made by Mr.Quantum (Darshan Patel)
+
+#ifdef _WIN32
+#include <windows.h>
+void setupWindowsConsole()
+{
+    // Set the console output to UTF-8
+    SetConsoleOutputCP(CP_UTF8);
+    // Optional: Enable virtual terminal processing for better Unicode support
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+#endif
+
 #include "validate.h"
 #include "check.h"
-
-// Made by Mr.Quantum (Darshan Patel)
 
 #define blackKing 'k'
 #define blackQueen 'q'
@@ -18,9 +33,9 @@
 #define whiteKnight 'N'
 #define whiteRook 'R'
 
-#define white 1 // Here I am maping int to defining whose move
+#define white 1 // here I am maping int to defining whose move
 #define black 2
-#define yes 1
+#define yes 1 // just defined return value of 0 or 1 with more understandable format.
 #define no 0
 
 int gameNumber = 0;
@@ -29,13 +44,17 @@ struct player
 {
     char name[30];
     // int rating1;
-} player1, player2; // global variable , for access from every where in code, to prevent uneccesary passing of variables everytime
+} player1, player2; // defined here as global variable , for access from every where in code, to prevent uneccesary passing of variables everytime
 
-// struct player player1, player2;
+struct kingPosition
+{
+    int row;
+    int column;
+} trackWhiteKing, trackBlackKing;
 
 void Instructions();
 void fillInitialMatrix(char matrix[8][8]);
-void printCanvas(char matrix[8][8]);
+void printBoard(char matrix[8][8]);
 int mapCharToInt(char Column);
 void storeNameHistory(char player1[30], char player2[30]);
 void storeMoveHistory(char player[30], char InitialColumn, int InitialRow, char FinalColumn, int FinalRow);
@@ -43,6 +62,10 @@ void storeResultHistory(int whoWon, int exit);
 
 int main()
 {
+#ifdef _WIN32
+    setupWindowsConsole();
+#endif
+
     int check = no;
     int exit = no; // taken exit in middle
 
@@ -65,7 +88,7 @@ int main()
     }
 
     fillInitialMatrix(matrix);
-    printCanvas(matrix);
+    printBoard(matrix);
 
     int result = no;
     int whoseMove = black;
@@ -85,6 +108,12 @@ int main()
             char piece;
             while (validMove == no)
             {
+                printf("Check = %d", check);
+                if (check == yes)
+                {
+                    printf("Caution White Kings is in Check !");
+                }
+
                 printf("\nIt's %s's turn. Enter the Coordintes of the Move : ", player1.name);
                 scanf("%c%d %c%d", &InitialColumn, &InitialRow, &FinalColumn, &FinalRow);
                 if (InitialColumn == '0' && InitialRow == 0 && FinalColumn == '0' && FinalRow == 0)
@@ -96,7 +125,7 @@ int main()
                 getchar();
                 InitialColumn_int = mapCharToInt(InitialColumn);
                 FinalColumn_int = mapCharToInt(FinalColumn);
-                piece = matrix[8 - InitialRow][InitialColumn_int - 1]; // To scan what the piece is at the position mentioned by user
+                piece = matrix[8 - InitialRow][InitialColumn_int - 1]; // to scan what the piece is at the position mentioned by user
 
                 int possibleEnpassant = no;
 
@@ -112,12 +141,17 @@ int main()
                     printf("\nPlease Enter Valid Move");
                 }
             }
+            if (piece == whiteKing)
+            {
+                trackWhiteKing.row = FinalRow;
+                trackBlackKing.column = FinalColumn_int;
+            }
 
-            // simulateMove(piece, InitialRow, InitialColumn_int, FinalRow, FinalColumn_int);
             matrix[8 - InitialRow][InitialColumn_int - 1] = ' ';
             matrix[8 - FinalRow][FinalColumn_int - 1] = piece;
             printf("\033[H\033[2J\033[3J"); // to clear the terminal, to reprint the canvas
-            printCanvas(matrix);
+            checkCheck(black, matrix, trackBlackKing.row, trackBlackKing.column, &check);
+            printBoard(matrix);
             storeMoveHistory(player1.name, InitialColumn, InitialRow, FinalColumn, FinalRow);
         }
 
@@ -139,7 +173,7 @@ int main()
                 getchar();
                 InitialColumn_int = mapCharToInt(InitialColumn);
                 FinalColumn_int = mapCharToInt(FinalColumn);
-                piece = matrix[8 - InitialRow][InitialColumn_int - 1]; // To scan what the piece is at the position mentioned by user
+                piece = matrix[8 - InitialRow][InitialColumn_int - 1]; // to scan what the piece is at the position mentioned by user
 
                 int possibleEnpassant = 0;
 
@@ -156,11 +190,11 @@ int main()
                 }
             }
 
-            // simulateMove(piece, InitialRow, InitialColumn_int, FinalRow, FinalColumn_int);
             matrix[8 - InitialRow][InitialColumn_int - 1] = ' ';
             matrix[8 - FinalRow][FinalColumn_int - 1] = piece;
             printf("\033[H\033[2J\033[3J"); // to clear the terminal, to reprint the canvas
-            printCanvas(matrix);
+            printBoard(matrix);
+            checkCheck(white, matrix, trackWhiteKing.row, trackWhiteKing.column, &check);
             storeMoveHistory(player2.name, InitialColumn, InitialRow, FinalColumn, FinalRow);
         }
     }
@@ -187,9 +221,10 @@ void Instructions()
            "2. Zoom the terminal if chess pieces and board not visible clearly.\n"
            "3. To Exit the game in middle of the game , just type 00 00 when asked to enter the coordinates.\n"
            "4. Donot kill the terminal from middle. Instead write the above exit code and close the program properly, to avoid log errors while storing history."
-            "\n\n");
+           "\n\n");
 }
-void printCanvas(char matrix[8][8])
+
+void printBoard(char matrix[8][8])
 {
     printf("\n\n\t\t\t   ");
     for (int k = 0; k < 8; k++)

@@ -1,9 +1,36 @@
-left to do{
-1. mark everytime when enpassant move (pawn directly moves to 2 jumps) so that while checking we can  
-2. build the check file to restrict the movement when the king is in check
-3. first king move? then possible castling.
+{
+    Left to do
+    
+IMP :conditional Compilation
+    :  Use Pointers in calling differnt functions
+    : memory allocation malloc
+    : check bishop moves in all other
+    : check for black pawn movement
+
+        1. mark everytime when enpassant move (pawn directly moves to 2 jumps) so that while checking we can  
+        2. build the check file to restrict the movement when the king is in check
+        3. first king move? then possible castling.
 }
 
-extra ideas
-1. Rating
-2. 
+{
+    What concepts covered :
+        1. Macros
+        2. Arrays
+        3. File Handling
+        4. Prepocessor + Conditional Compilation
+        5. Structures
+        6. Used ANSI Escape Sequence for colouring the output and printing chess board.
+        7. Used Unicode characters for printing chess pieces.
+        8. Global variable
+}
+
+
+{
+    Extra ideas
+        1. Rating
+        2. 
+}
+
+
+
+

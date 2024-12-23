@@ -1,7 +1,6 @@
 // header file to check the validity of the move
 #include <stdio.h>
 #include <stdlib.h>
-#include "check.h"
 #define blackKing 'k'
 #define blackQueen 'q'
 #define blackPawn 'p'
@@ -98,181 +97,87 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             if (rowDiff != columnDiff)
             {
+                printf("Error405");
                 return no;
             }
 
-            int direction = 0;
+            int rowStep = (FinalRow - InitialRow) / rowDiff;                  //-1,+1
+            int colStep = (FinalColumn_int - InitialColumn_int) / columnDiff; //-1,+1   determines the direction in whihc it is to be moved
 
-            // 3 1
-            // 4 2
-            if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) > 0)
-            {
-                direction = 1;
-            }
-            else if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) < 0)
-            {
-                direction = 2;
-            }
+            int currentRow = InitialRow + rowStep;
+            int currentCol = InitialColumn_int + colStep;
 
-            else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) > 0)
+            while (currentRow != FinalRow && currentCol != FinalColumn_int)
             {
-                direction = 3;
-            }
-
-            else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) < 0)
-            {
-                direction = 4;
-            }
-
-            int obstacleFlag = 1;
-
-            for (int i = 0; i < rowDiff; i++)
-            {
-                if (direction == 1)
+                if (matrix[8 - currentRow][currentCol - 1] != ' ') // here checking if theres any obstacle while the pieces travels from initial to final postion, as if path is not clear the piece can't go to final box.
                 {
-                    if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int - i - 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
+                    printf("Error406");
+                    return no;
                 }
-
-                else if (direction == 2)
-                {
-                    if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int - i - 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
-
-                else if (direction == 3)
-                {
-                    if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int + i + 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
-
-                else if (direction == 4)
-                {
-                    if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int + i + 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
+                currentRow += rowStep;
+                currentCol += colStep;
             }
 
-            if ((rowDiff == columnDiff) && (obstacleFlag == 1) &&
-                (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
+            if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing)
             {
                 return yes;
             }
             else
             {
-                printf("Error405");
+                printf("Error407");
                 return no;
             }
         }
 
         else if (piece == whiteRook)
         {
-            if (InitialRow == FinalRow || InitialColumn_int == FinalColumn_int)
+            int rowDiff = abs(FinalRow - InitialRow);
+            int colDiff = abs(FinalColumn_int - InitialColumn_int);
+
+            if (rowDiff == 0 || colDiff == 0)
             {
-                int direction = 0;
+                int rowStep = (rowDiff != 0) ? (FinalRow - InitialRow) / rowDiff : 0;
+                int colStep = (colDiff != 0) ? (FinalColumn_int - InitialColumn_int) / colDiff : 0;
 
-                if (FinalRow > InitialRow)
-                {
-                    direction = 1; // up
-                }
-                else if (FinalRow < InitialRow)
-                {
-                    direction = 2; // down
-                }
-                else if (FinalColumn_int > InitialColumn_int)
-                {
-                    direction = 3; // right
-                }
-                else if (FinalColumn_int < InitialColumn_int)
-                {
-                    direction = 4; // left
-                }
+                int currentRow = InitialRow + rowStep;
+                int currentCol = InitialColumn_int + colStep;
 
-                int obstacleFlag = 1;
-
-                // check for obstacles in the path
-                if (direction == 1)
+                while (currentRow != FinalRow || currentCol != FinalColumn_int)
                 {
-                    for (int i = InitialRow + 1; i < FinalRow; i++)
+                    if (matrix[8 - currentRow][currentCol - 1] != ' ')
                     {
-                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
+                        printf("Error408");
+                        return no;
                     }
+                    currentRow += rowStep;
+                    currentCol += colStep;
                 }
 
-                else if (direction == 2)
-                {
-                    for (int i = (InitialRow - 1); i > FinalRow; i--)
-                    {
-                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-                else if (direction == 3)
-                {
-                    for (int i = InitialColumn_int + 1; i < FinalColumn_int; i++)
-                    {
-                        if (matrix[8 - InitialRow][i] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-                else if (direction == 4)
-                {
-                    for (int i = InitialColumn_int - 1; i > FinalColumn_int; i--)
-                    {
-                        if (matrix[8 - InitialRow][i] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-
-                if ((obstacleFlag == 1) &&
-
-                    (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
+                if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing)
                 {
                     return yes;
                 }
-
                 else
                 {
-                    printf("Error406");
+                    printf("Error300");
                     return no;
                 }
             }
             else
             {
-                printf("Error407");
+                printf("Error301");
                 return no;
             }
         }
@@ -299,7 +204,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             else
             {
-                printf("Error408");
+                printf("Error302");
                 return no;
             }
         }
@@ -314,169 +219,92 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 // rook
                 if ((InitialRow == FinalRow) || (InitialColumn_int == FinalColumn_int))
                 {
-                    int direction = 0;
+                    int rowDiff = abs(FinalRow - InitialRow);
+                    int colDiff = abs(FinalColumn_int - InitialColumn_int);
 
-                    if (FinalRow > InitialRow)
+                    if (rowDiff == 0 || colDiff == 0)
                     {
-                        direction = 1; // up
-                    }
-                    else if (FinalRow < InitialRow)
-                    {
-                        direction = 2; // down
-                    }
-                    else if (FinalColumn_int > InitialColumn_int)
-                    {
-                        direction = 3; // right
-                    }
-                    else if (FinalColumn_int < InitialColumn_int)
-                    {
-                        direction = 4; // left
-                    }
+                        int rowStep = (rowDiff != 0) ? (FinalRow - InitialRow) / rowDiff : 0;
+                        int colStep = (colDiff != 0) ? (FinalColumn_int - InitialColumn_int) / colDiff : 0;
 
-                    int obstacleFlag = 1;
+                        int currentRow = InitialRow + rowStep;
+                        int currentCol = InitialColumn_int + colStep;
 
-                    // check for obstacles in the path
-                    if (direction == 1)
-                    {
-                        for (int i = InitialRow + 1; i < FinalRow; i++)
+                        while (currentRow != FinalRow || currentCol != FinalColumn_int)
                         {
-                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
+                            if (matrix[8 - currentRow][currentCol - 1] != ' ')
                             {
-                                obstacleFlag = 0;
-                                break;
+                                printf("Error408");
+                                return no;
                             }
+                            currentRow += rowStep;
+                            currentCol += colStep;
                         }
-                    }
 
-                    else if (direction == 2)
-                    {
-                        for (int i = InitialRow - 1; i > FinalRow; i--)
+                        if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing)
                         {
-                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
+                            return yes;
                         }
-                    }
-                    else if (direction == 3)
-                    {
-                        for (int i = InitialColumn_int + 1; i < FinalColumn_int; i++)
+                        else
                         {
-                            if (matrix[8 - InitialRow][i] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
+                            printf("Error300");
+                            return no;
                         }
-                    }
-                    else if (direction == 4)
-                    {
-                        for (int i = InitialColumn_int - 1; i > FinalColumn_int; i--)
-                        {
-                            if (matrix[8 - InitialRow][i] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
-                        }
-                    }
-
-                    if ((obstacleFlag == 1) &&
-
-                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
-                    {
-                        return yes;
                     }
                     else
                     {
-                        printf("Error409");
+                        printf("Error301");
                         return no;
                     }
                 }
                 // bishop
                 else
                 {
-                    int direction = 0;
+                    int rowDiff = abs(FinalRow - InitialRow);
+                    int columnDiff = abs(FinalColumn_int - InitialColumn_int);
 
-                    // 3 1
-                    // 4 2
-                    if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) > 0)
+                    if (rowDiff != columnDiff)
                     {
-                        direction = 1;
-                    }
-                    else if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) < 0)
-                    {
-                        direction = 2;
+                        printf("Error405");
+                        return no;
                     }
 
-                    else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) > 0)
-                    {
-                        direction = 3;
-                    }
+                    int rowStep = (FinalRow - InitialRow) / rowDiff;                  //-1,+1
+                    int colStep = (FinalColumn_int - InitialColumn_int) / columnDiff; //-1,+1   determines the direction in whihc it is to be moved
 
-                    else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) < 0)
-                    {
-                        direction = 4;
-                    }
+                    int currentRow = InitialRow + rowStep;
+                    int currentCol = InitialColumn_int + colStep;
 
-                    int obstacleFlag = 1;
-
-                    for (int i = 0; i < rowDiff; i++)
+                    while (currentRow != FinalRow && currentCol != FinalColumn_int)
                     {
-                        if (direction == 1)
+                        if (matrix[8 - currentRow][currentCol - 1] != ' ') // here checking if theres any obstacle while the pieces travels from initial to final postion, as if path is not clear the piece can't go to final box.
                         {
-                            if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int - i - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
+                            printf("Error406");
+                            return no;
                         }
-
-                        else if (direction == 2)
-                        {
-                            if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int - i - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
-
-                        else if (direction == 3)
-                        {
-                            if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int + i + 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
-
-                        else if (direction == 4)
-                        {
-                            if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int + i + 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
+                        currentRow += rowStep;
+                        currentCol += colStep;
                     }
 
-                    if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing))
+                    if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == blackKing)
                     {
                         return yes;
                     }
                     else
                     {
-                        printf("Error410");
+                        printf("Error407");
                         return no;
                     }
                 }
@@ -492,14 +320,23 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
         else if (piece == whiteKing)
         {
-            if (1)
+            int rowDiff = abs(FinalRow - InitialRow);
+            int colDiff = abs(FinalColumn_int - InitialColumn_int);
+
+            if ((rowDiff <= 1) && (colDiff <= 1))
             {
-                return yes;
+                if ((matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackPawn ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackBishop ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackRook ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackKnight ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == blackQueen))
+                {
+                    return yes;
+                }
             }
             else
             {
-                printf("Error412");
-
                 return no;
             }
         }
@@ -544,7 +381,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                      ((InitialColumn_int + 1) < 8) ||
                  (FinalColumn_int == (InitialColumn_int - 1)) &&
                      ((InitialColumn_int - 1) > 0) &&
-                     (FinalRow == (InitialRow + 1))) &&
+                     (FinalRow == (InitialRow - 1))) &&
 
                 (matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
                  matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
@@ -556,7 +393,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 return yes;
             }
 
-            else if ((FinalRow == (InitialRow + 1)) && (matrix[InitialRow + 1][InitialColumn_int - 1] == ' ')) // simple move
+            else if ((FinalRow == (InitialRow - 1)) && (matrix[InitialRow + 1][InitialColumn_int - 1] == ' ')) // simple move
             {
                 return yes;
             }
@@ -575,181 +412,84 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             if (rowDiff != columnDiff)
             {
-                printf("Error417");
                 return no;
             }
 
-            int direction = 0;
+            int rowStep = (FinalRow - InitialRow) / rowDiff;                  //-1,+1
+            int colStep = (FinalColumn_int - InitialColumn_int) / columnDiff; //-1,+1   determines the direction in whihc it is to be moved
 
-            // 3 1
-            // 4 2
-            if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) > 0)
-            {
-                direction = 1;
-            }
-            else if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) < 0)
-            {
-                direction = 2;
-            }
+            int currentRow = InitialRow + rowStep;
+            int currentCol = InitialColumn_int + colStep;
 
-            else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) > 0)
+            while (currentRow != FinalRow && currentCol != FinalColumn_int)
             {
-                direction = 3;
-            }
-
-            else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) < 0)
-            {
-                direction = 4;
-            }
-
-            int obstacleFlag = 1;
-
-            for (int i = 0; i < rowDiff; i++)
-            {
-                if (direction == 1)
+                if (matrix[8 - currentRow][currentCol - 1] != ' ') // here checking if theres any obstacle while the pieces travels from initial to final postion, as if path is not clear the piece can't go to final box.
                 {
-                    if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int - i - 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
+                    return no;
                 }
-
-                else if (direction == 2)
-                {
-                    if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int - i - 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
-
-                else if (direction == 3)
-                {
-                    if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int + i + 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
-
-                else if (direction == 4)
-                {
-                    if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int + i + 1] != ' ')
-                    {
-                        obstacleFlag = 0;
-                    }
-                }
+                currentRow += rowStep;
+                currentCol += colStep;
             }
 
-            if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
-                 matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
+            if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)
             {
                 return yes;
             }
             else
             {
-                printf("Error418");
                 return no;
             }
         }
 
         else if (piece == blackRook)
         {
-            if (InitialRow == FinalRow || InitialColumn_int == FinalColumn_int)
+            int rowDiff = abs(FinalRow - InitialRow);
+            int colDiff = abs(FinalColumn_int - InitialColumn_int);
+
+            if (rowDiff == 0 || colDiff == 0)
             {
-                int direction = 0;
+                int rowStep = (rowDiff != 0) ? (FinalRow - InitialRow) / rowDiff : 0;
+                int colStep = (colDiff != 0) ? (FinalColumn_int - InitialColumn_int) / colDiff : 0;
 
-                if (FinalRow > InitialRow)
-                {
-                    direction = 1; // up
-                }
-                else if (FinalRow < InitialRow)
-                {
-                    direction = 2; // down
-                }
-                else if (FinalColumn_int > InitialColumn_int)
-                {
-                    direction = 3; // right
-                }
-                else if (FinalColumn_int < InitialColumn_int)
-                {
-                    direction = 4; // left
-                }
+                int currentRow = InitialRow + rowStep;
+                int currentCol = InitialColumn_int + colStep;
 
-                int obstacleFlag = 1;
-
-                // check for obstacles in the path
-                if (direction == 1)
+                while (currentRow != FinalRow || currentCol != FinalColumn_int)
                 {
-                    for (int i = InitialRow + 1; i < FinalRow; i++)
+                    if (matrix[8 - currentRow][currentCol - 1] != ' ')
                     {
-                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
+                        printf("Error408");
+                        return no;
                     }
+                    currentRow += rowStep;
+                    currentCol += colStep;
                 }
 
-                else if (direction == 2)
-                {
-                    for (int i = (InitialRow - 1); i > FinalRow; i--)
-                    {
-                        if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-                else if (direction == 3)
-                {
-                    for (int i = InitialColumn_int + 1; i < FinalColumn_int; i++)
-                    {
-                        if (matrix[8 - InitialRow][i] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-                else if (direction == 4)
-                {
-                    for (int i = InitialColumn_int - 1; i > FinalColumn_int; i--)
-                    {
-                        if (matrix[8 - InitialRow][i] != ' ')
-                        {
-                            obstacleFlag = 0;
-                            break;
-                        }
-                    }
-                }
-
-                if ((obstacleFlag == 1) &&
-
-                    (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
-                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
+                if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                    matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)
                 {
                     return yes;
                 }
                 else
                 {
-                    printf("Error419");
+                    printf("Error300");
                     return no;
                 }
             }
             else
             {
-                printf("Error420");
+                printf("Error301");
                 return no;
             }
         }
@@ -780,7 +520,7 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
             }
         }
 
-        else if (piece == blackQueen)
+        else if (piece == whiteQueen)
         {
             int rowDiff = abs(FinalRow - InitialRow);
             int columnDiff = abs(FinalColumn_int - InitialColumn_int);
@@ -790,169 +530,92 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
                 // rook
                 if ((InitialRow == FinalRow) || (InitialColumn_int == FinalColumn_int))
                 {
-                    int direction = 0;
+                    int rowDiff = abs(FinalRow - InitialRow);
+                    int colDiff = abs(FinalColumn_int - InitialColumn_int);
 
-                    if (FinalRow > InitialRow)
+                    if (rowDiff == 0 || colDiff == 0)
                     {
-                        direction = 1; // up
-                    }
-                    else if (FinalRow < InitialRow)
-                    {
-                        direction = 2; // down
-                    }
-                    else if (FinalColumn_int > InitialColumn_int)
-                    {
-                        direction = 3; // right
-                    }
-                    else if (FinalColumn_int < InitialColumn_int)
-                    {
-                        direction = 4; // left
-                    }
+                        int rowStep = (rowDiff != 0) ? (FinalRow - InitialRow) / rowDiff : 0;
+                        int colStep = (colDiff != 0) ? (FinalColumn_int - InitialColumn_int) / colDiff : 0;
 
-                    int obstacleFlag = 1;
+                        int currentRow = InitialRow + rowStep;
+                        int currentCol = InitialColumn_int + colStep;
 
-                    // check for obstacles in the path
-                    if (direction == 1)
-                    {
-                        for (int i = InitialRow + 1; i < FinalRow; i++)
+                        while (currentRow != FinalRow || currentCol != FinalColumn_int)
                         {
-                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
+                            if (matrix[8 - currentRow][currentCol - 1] != ' ')
                             {
-                                obstacleFlag = 0;
-                                break;
+                                printf("Error408");
+                                return no;
                             }
+                            currentRow += rowStep;
+                            currentCol += colStep;
                         }
-                    }
 
-                    else if (direction == 2)
-                    {
-                        for (int i = InitialRow - 1; i > FinalRow; i--)
+                        if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                            matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)
                         {
-                            if (matrix[8 - i][InitialColumn_int - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
+                            return yes;
                         }
-                    }
-                    else if (direction == 3)
-                    {
-                        for (int i = InitialColumn_int + 1; i < FinalColumn_int; i++)
+                        else
                         {
-                            if (matrix[8 - InitialRow][i] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
+                            printf("Error300");
+                            return no;
                         }
-                    }
-                    else if (direction == 4)
-                    {
-                        for (int i = InitialColumn_int - 1; i > FinalColumn_int; i--)
-                        {
-                            if (matrix[8 - InitialRow][i] != ' ')
-                            {
-                                obstacleFlag = 0;
-                                break;
-                            }
-                        }
-                    }
-
-                    if ((obstacleFlag == 1) &&
-
-                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
-                    {
-                        return yes;
                     }
                     else
                     {
-                        printf("Error422");
+                        printf("Error301");
                         return no;
                     }
                 }
                 // bishop
                 else
                 {
-                    int direction = 0;
+                    int rowDiff = abs(FinalRow - InitialRow);
+                    int columnDiff = abs(FinalColumn_int - InitialColumn_int);
 
-                    // 3 1
-                    // 4 2
-                    if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) > 0)
+                    if (rowDiff != columnDiff)
                     {
-                        direction = 1;
-                    }
-                    else if ((FinalColumn_int - InitialColumn_int) > 0 && (FinalRow - InitialRow) < 0)
-                    {
-                        direction = 2;
+                        printf("Error405");
+                        return no;
                     }
 
-                    else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) > 0)
-                    {
-                        direction = 3;
-                    }
+                    int rowStep = (FinalRow - InitialRow) / rowDiff;                  //-1,+1
+                    int colStep = (FinalColumn_int - InitialColumn_int) / columnDiff; //-1,+1   determines the direction in whihc it is to be moved
 
-                    else if ((FinalColumn_int - InitialColumn_int) < 0 && (FinalRow - InitialRow) < 0)
-                    {
-                        direction = 4;
-                    }
+                    int currentRow = InitialRow + rowStep;
+                    int currentCol = InitialColumn_int + colStep;
 
-                    int obstacleFlag = 1;
-
-                    for (int i = 0; i < rowDiff; i++)
+                    while (currentRow != FinalRow && currentCol != FinalColumn_int)
                     {
-                        if (direction == 1)
+                        if (matrix[8 - currentRow][currentCol - 1] != ' ') // here checking if theres any obstacle while the pieces travels from initial to final postion, as if path is not clear the piece can't go to final box.
                         {
-                            if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int - i - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
+                            printf("Error406");
+                            return no;
                         }
-
-                        else if (direction == 2)
-                        {
-                            if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int - i - 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
-
-                        else if (direction == 3)
-                        {
-                            if (matrix[8 - (FinalRow - i - 1)][FinalColumn_int + i + 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
-
-                        else if (direction == 4)
-                        {
-                            if (matrix[8 - (FinalRow + i + 1)][FinalColumn_int + i + 1] != ' ')
-                            {
-                                obstacleFlag = 0;
-                            }
-                        }
+                        currentRow += rowStep;
+                        currentCol += colStep;
                     }
 
-                    if ((rowDiff == columnDiff) && (obstacleFlag != 0) &&
-                        (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
-                         matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing))
+                    if (matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen ||
+                        matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKing)
                     {
                         return yes;
                     }
                     else
                     {
-                        printf("Error423");
+                        printf("Error407");
                         return no;
                     }
                 }
@@ -960,21 +623,31 @@ int validate(int whoseMove, char matrix[8][8], char piece, int InitialRow, int I
 
             else
             {
-                printf("Error424");
+                printf("Error411");
+
                 return no;
             }
         }
 
         else if (piece == blackKing)
-
         {
-            if (1)
+            int rowDiff = abs(FinalRow - InitialRow);
+            int colDiff = abs(FinalColumn_int - InitialColumn_int);
+
+            if ((rowDiff <= 1) && (colDiff <= 1))
             {
-                return yes;
+                if ((matrix[8 - FinalRow][FinalColumn_int - 1] == ' ' ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whitePawn ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteBishop ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteRook ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteKnight ||
+                     matrix[8 - FinalRow][FinalColumn_int - 1] == whiteQueen))
+                {
+                    return yes;
+                }
             }
             else
             {
-
                 return no;
             }
         }

@@ -16,8 +16,7 @@ void setupWindowsConsole()
 }
 #endif
 
-#include "validate.h"
-#include "check.h"
+#include "fxns.h"
 
 #define blackKing 'k'
 #define blackQueen 'q'
@@ -220,7 +219,7 @@ void Instructions()
     printf("\n\n1. Enter the Coordinates (from-->to) format exactly like this : a2 a4\n"
            "2. Zoom the terminal if chess pieces and board not visible clearly.\n"
            "3. To Exit the game in middle of the game , just type 00 00 when asked to enter the coordinates.\n"
-           "4. Donot kill the terminal from middle. Instead write the above exit code and close the program properly, to avoid log errors while storing history."
+           "4. Do not kill the terminal in between. Instead write the above exit code and close the program properly, to avoid log errors while storing history."
            "\n\n");
 }
 

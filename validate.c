@@ -1,6 +1,7 @@
 // header file to check the validity of the move
 #include <stdio.h>
 #include <stdlib.h>
+#include "fxns.h"
 #define blackKing 'k'
 #define blackQueen 'q'
 #define blackPawn 'p'

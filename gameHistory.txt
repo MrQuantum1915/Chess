@@ -16,3 +16,20 @@
     }
 }
 0
+
+
+{
+	Game No : 1
+	Player 1 : 
+	Player 2 : 
+
+	Moves
+	 {
+
+{
+	Game No : 1
+	Player 1 : 
+	Player 2 : 
+
+	Moves
+	 {
